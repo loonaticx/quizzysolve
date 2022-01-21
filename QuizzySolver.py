@@ -1,5 +1,5 @@
 """
-Quizzy Solver
+QuizzySolver
 
 Original Author: Chidambaram Annamalai (quantumelixir)
 Date: 01/15/2011
@@ -11,7 +11,7 @@ Resources Used:
 https://github.com/dwyl/english-words/blob/master/words_dictionary.json
 
 Usage:
-python quizzy.py words.txt
+python QuizzySolver.py words.txt
 (see example input on the bottom)
 
 """
@@ -26,7 +26,7 @@ import json
 from time import time
 
 
-class Solver(object):
+class QuizzySolver(object):
 
     def __init__(self, ringfile, points=[1] * 26, dictionary='words_dictionary.json', minlen = 3, maxlen=15):
         """
@@ -43,20 +43,39 @@ class Solver(object):
         self.words = [i[:-1].upper() for i in dictionary if i[:-1].isalpha()]
         self.words.sort()  # just in case
         self.points = points
+        self.depth = None
+        self.rings = None
         self.parse(ringfile)
 
-        self.depth = len(self.rings)
         self.possibilities = []
         self.tried = set()
         self.minlength = 3
         self.maxlength = maxlen
 
     def parse(self, ringfile):
+        if ringfile is None:
+            return
         rings = []
         for line in open(ringfile):
             if line.strip():
                 rings += [list(line.strip().upper())]
         self.rings = [[[j, True] for j in i] for i in rings]
+        self.depth = len(self.rings)
+
+    def parseEntry(self, ringData):
+        """
+        :param ringData: array of lists that contain the characters for each ring
+        """
+        if ringData is None:
+            return
+        rings = []
+        for ringGroup in ringData:
+            rings += [list(ringGroup)]
+        self.rings = [[[j, True] for j in i] for i in rings]
+        self.depth = len(self.rings)
+        print("Debug: Finished parseEntry")
+        print("rings = " + str(self.rings))
+
 
     def isvalid(self, word):
         """
@@ -124,27 +143,13 @@ class Solver(object):
         self.suggest()
         self.possibilities.sort(key=lambda x: x[0], reverse=True)
         for worth, word in self.possibilities:
-            pass
             print(word)
+        print("Finished searching.")
 
 
 # print 'Took %.3f seconds' % (time() - t)
 
-if __name__ == '__main__':
-    import os
-    import sys
 
-    inputfile = 'ringfile.txt'
-
-    if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
-        inst = Solver(sys.argv[1])
-        inst.solve()
-    elif os.path.isfile(inputfile):
-        inst = Solver(inputfile, maxlen=8)
-        inst.solve()
-    else:
-        # todo: We can't find the input file they gave us, so let's just use good ol' traditional input()
-        print('Did you give the right filename?')
 
 """
 Example Data
