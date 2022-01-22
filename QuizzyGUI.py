@@ -4,7 +4,7 @@ import direct.directbase.DirectStart
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
 from panda3d.core import *
-
+import math
 from QuizzySolver import QuizzySolver
 
 
@@ -14,6 +14,7 @@ class QuizzyGUI(DirectFrame):
             self,
             relief = None,
             image_color = (1, 0, 0, 1),
+            pos = (0.5, 0, 0),
             sortOrder = DGG.BACKGROUND_SORT_INDEX,
         )
 
@@ -182,7 +183,6 @@ class QuizzyGUI(DirectFrame):
     def solveText(self):
         self.solver.parseEntry(self.extractText())
         self.solver.solve()
-        pass
 
     def extractText(self):
         ringList = []
@@ -197,13 +197,52 @@ class QuizzyGUI(DirectFrame):
             print(charList)
         return ringList
 
+    def setMin(self):
+        self.checkSliders()
+        self.solver.setMin(int(self.minSlider['value']))
+
+    def setMax(self):
+        self.checkSliders()
+        self.solver.setMax(int(self.maxSlider['value']))
+
+    def checkSliders(self):
+        #self.minSlider['value'] = int(self.minSlider['value'])
+        #self.maxSlider['value'] = int(self.maxSlider['value'])
+        self.updateSliderText()
+        if self.minSlider['value'] >= self.maxSlider['value']:
+            if int(self.minSlider['value']) != 3 or int(self.maxSlider['value']) != 3:
+                self.minSlider['value'] = int(self.maxSlider['value']) - 1
+            if int(self.maxSlider['value']) != 15 or int(self.minSlider['value']) != 15:
+                self.maxSlider['value'] = int(self.minSlider['value']) + 1
+
+    def updateSliderText(self):
+        self.minSliderText['text'] = str(int(self.minSlider['value']))
+        self.maxSliderText['text'] = str(int(self.maxSlider['value']))
+
     def loadGUI(self):
         self.solveButton = DirectButton(
             parent = self,
-            pos = (0.8, 0, 0),
+            pos = (-0.55, 0, -0.2),
             text = "Solve",
             scale = 0.1,
             command = self.solveText,
+        )
+        self.minSlider = DirectSlider(
+            range = (3, 15), value = 3, pageSize = 1, command = self.setMin,
+            pos = (-0.75, 0, -0.35), scale = (0.35, 0.6, 0.6), parent=self
+        )
+        self.minSliderText = DirectLabel(
+            parent=self, text = str(int(self.minSlider['value'])), pos = (-0.15, 0, -0.4),
+            scale = 0.15
+        )
+
+        self.maxSlider = DirectSlider(
+            range = (3, 15), value = 8, pageSize = 1, command = self.setMax,
+            pos = (-0.75, 0, -0.45), scale = (0.35, 0.6, 0.6), parent=self,
+        )
+        self.maxSliderText = DirectLabel(
+            parent=self, text = str(int(self.maxSlider['value'])), pos = (-0.15, 0, -0.5),
+            scale = 0.15
         )
 
 QuizzyGUI = QuizzyGUI()

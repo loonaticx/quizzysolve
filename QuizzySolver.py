@@ -45,22 +45,27 @@ class QuizzySolver(object):
         self.points = points
         self.depth = None
         self.rings = None
-        self.parse(ringfile)
+        if ringfile is not None:
+            self.parse(ringfile)
 
         self.possibilities = []
         self.tried = set()
-        self.minlength = 3
+        self.minlength = minlen
         self.maxlength = maxlen
 
     def parse(self, ringfile):
-        if ringfile is None:
-            return
+        #if ringfile is None:
+        #    return
+        self.resetData()
         rings = []
         for line in open(ringfile):
             if line.strip():
                 rings += [list(line.strip().upper())]
         self.rings = [[[j, True] for j in i] for i in rings]
         self.depth = len(self.rings)
+        # print("Debug: Finished parse ")
+        # print("rings = " + str(self.rings))
+
 
     def parseEntry(self, ringData):
         """
@@ -68,14 +73,26 @@ class QuizzySolver(object):
         """
         if ringData is None:
             return
+        self.resetData()
         rings = []
         for ringGroup in ringData:
             rings += [list(ringGroup)]
         self.rings = [[[j, True] for j in i] for i in rings]
         self.depth = len(self.rings)
-        print("Debug: Finished parseEntry")
-        print("rings = " + str(self.rings))
+        # print("Debug: Finished parseEntry")
+        # print("rings = " + str(self.rings))
 
+    def resetData(self):
+        self.rings = None
+        self.depth = None
+        self.possibilities = []
+        self.tried = set()
+
+    def setMin(self, minlength):
+        self.minlength = minlength
+
+    def setMax(self, maxlength):
+        self.maxlength = maxlength
 
     def isvalid(self, word):
         """
