@@ -1,10 +1,10 @@
 # Quizzysolve - An updated Quizzy's Word Challenge solver!
 
-This is a fork of a quizzy solver that was made by Chidambaram Annamalai (quantumelixir). You can find the original Quizzy script (here)[https://gist.github.com/quantumelixir/780823]
+This is a fork of a quizzy solver that was made by Chidambaram Annamalai (quantumelixir). You can find the original Quizzy script [here](https://gist.github.com/quantumelixir/780823)
 
 
 ## Features
-!(GUI Interface!! Wowza!)[img/interface.png]
+![GUI Interface!! Wowza!](img/interface.png)
 - Both a command line interface *and* a GUI interface.
 
 ## Requirements
